@@ -108,4 +108,16 @@ postgres=# select * from test;
 ]
 Технически +- тоже самое что и диск, ну и перемапливал его новому контейнеру =)
 В принципе будь то физический диск - мы бы так же мапили его в нужный каталог, и получили бы тот же результат.
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "pgsql_vol",
+                "Source": "/var/lib/docker/volumes/pgsql_vol/_data",
+                "Destination": "/var/lib/postgresql/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]
 ```
