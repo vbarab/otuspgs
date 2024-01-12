@@ -30,5 +30,6 @@
 есть идеи почему?
 ```
 По причине того что права были выданы на таблицу уже удаленную , а задавал я права без ключа default:  grant SELECT on all TABLEs in SCHEMA testnm TO readonly
+testdb=# ALTER default privileges in SCHEMA testnm grant SELECT on TABLES to readonly1;
 ```
 
