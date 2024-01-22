@@ -32,4 +32,9 @@
 По причине того что права были выданы на таблицу уже удаленную , а задавал я права без ключа default:  grant SELECT on all TABLEs in SCHEMA testnm TO readonly
 testdb=# ALTER default privileges in SCHEMA testnm grant SELECT on TABLES to readonly1;
 ```
+теперь попробуйте выполнить команду create table t2(c1 integer); insert into t2 values (2);
+а как так? нам же никто прав на создание таблиц и insert в них под ролью readonly?
+```
+Мы не указывали конкретную схему tesnm.t2 поэтмоу табилцы создаются в паблике по дефолту, можно забрать права у нашего пользователя, членов паблик, и будет запрет 
+```
 
