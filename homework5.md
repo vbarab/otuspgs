@@ -92,3 +92,4 @@ latency stddev = 3.313 ms
 initial connection time = 42.620 ms
 tps = 1157.655054 (without initial connection time)
 ```
+честно говоря разницы в выводе почти нет)
