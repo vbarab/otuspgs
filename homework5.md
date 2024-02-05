@@ -93,3 +93,54 @@ initial connection time = 42.620 ms
 tps = 1157.655054 (without initial connection time)
 ```
 честно говоря разницы в выводе почти нет)
+
+
+Посмотреть размер файла с таблицей
+```
+679M    /var/lib/postgresql/15/main/base/5
+postgres=# SELECT pg_size_pretty(pg_total_relation_size('homework5'));
+ pg_size_pretty
+----------------
+ 651 MB
+(1 row)
+
+```
+после нескольких итерация
+```
+1.8G    /var/lib/postgresql/15/main/base/5
+pg_size_pretty
+----------------
+ 1799 MB
+(1 row)
+```
+Даже после удаления таблиц 
+```
+postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_TABLEs
+;
+     relname      | n_live_tup | n_dead_tup | ratio% |        last_autovacuum
+------------------+------------+------------+--------+-------------------------------
+ pgbench_tellers  |          0 |          0 |      0 |
+ pgbench_history  |          0 |          0 |      0 |
+ pgbench_accounts |          0 |          0 |      0 |
+ homework5        |    9975634 |        184 |      0 | 2024-02-05 16:55:03.490892+03
+ pgbench_branches |          0 |          0 |      0 |
+
+postgres=# delete from homework5 where randomdata IS NOT NULL;
+DELETE 10000002
+1.8G    /var/lib/postgresql/15/main/base/5
+postgres=# SELECT pg_size_pretty(pg_total_relation_size('homework5'));
+ pg_size_pretty
+----------------
+ 16 kB
+(1 row)
+postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_TABLEs
+;
+     relname      | n_live_tup | n_dead_tup | ratio% |        last_autovacuum
+------------------+------------+------------+--------+-------------------------------
+ pgbench_tellers  |          0 |          0 |      0 |
+ pgbench_history  |          0 |          0 |      0 |
+ pgbench_accounts |          0 |          0 |      0 |
+ homework5        |          0 |          0 |      0 | 2024-02-05 17:00:55.567647+03
+ pgbench_branches |          0 |          0 |      0 |
+(5 rows)
+
