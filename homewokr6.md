@@ -192,3 +192,97 @@ homework6=# alter system set synchronous_commit TO remote_write ;
 
 ```
 Транзакций стало меньше, т.к. мы и увеличили задержку
+
+```
+postgres=# SHOW data_checksums
+postgres-# ;
+ data_checksums
+----------------
+ off
+(1 row)
+```
+включаем проверяем создаем таблицу со значениями
+```
+/usr/lib/postgresql/15/bin/pg_checksums --enable -D /var/lib/postgresql/15/homework6/
+Checksum operation completed
+Files scanned:   946
+Blocks scanned:  2807
+Files written:  778
+Blocks written: 2807
+pg_checksums: syncing data directory
+pg_checksums: updating control file
+Checksums enabled in cluster
+
+
+postgres=# SHOW data_checksums
+postgres-# ;
+ data_checksums
+----------------
+ on
+(1 row)
+
+
+testchecksums=# create table public.checksums (i int);
+CREATE TABLE
+testchecksums=# insert into public.checksums
+(               DEFAULT VALUES  OVERRIDING      SELECT          TABLE           VALUES
+testchecksums=# insert into public.checksums values (1),(2),(3);
+INSERT 0 3
+testchecksums=# select * from
+
+testchecksums=# select * from public.checksums ;
+ i
+---
+ 1
+ 2
+ 3
+(3 rows)
+
+sudo nano /var/lib/postgresql/15/homework6/base/16388/16389
+
+testchecksums=# select * from public.checksums ;
+ i
+---
+ 1
+ 2
+ 3
+(3 rows)
+
+testchecksums=# SHOW data_checksums
+;
+ data_checksums
+----------------
+ on
+
+testchecksums=# insert into public.checksums values(4);
+INSERT 0 1
+testchecksums=# select * from public.checksums ;
+ i
+---
+ 1
+ 2
+ 3
+ 4
+(4 rows)
+
+```
+Ошибки не получил, повторил процедуру, добавив информацию в начало файла получил, 
+поэтмоу создал новую таблицу и сегенирл еще раз ошибку
+```
+testchecksums=# select * from public.checksums ;
+ERROR:  invalid page in block 0 of relation base/16388/16389
+
+
+
+testchecksums=# select pg_relation_filepath('testchecksums2');
+;
+ pg_relation_filepath
+----------------------
+ base/16388/16392
+(1 row)
+
+WARNING:  page verification failed, calculated checksum 9448 but expected 26556
+ERROR:  invalid page in block 0 of relation base/16388/16392
+
+```
+для рабоы - добавить ignore_checksum_failure = true в посрескл.конф
